@@ -38,13 +38,11 @@ class Manager
 
         foreach([Proxies::class, Agents::class] as $handler)
         {
-            if(!method_exists($this->tables, $handler::table)) continue;
-
             $hash = implode('.', ['Cache', 'Proxifier', 'Table', ucfirst($handler::table)]);
 
             $this->data[$handler::table] = $this->cache->remember($hash, 86400, function () use ($handler)
             {
-                return call_user_func(new $handler(call_user_func([$this->tables, $handler::table])));
+                return call_user_func(new $handler($this->tables->table($handler::table)));
             });
         }
     }
@@ -71,23 +69,20 @@ class Manager
         return $this;
     }
 
-    public function proxy()
+    public function proxy(): array
     {
         $proxy = $this->proxies[mt_rand(0, count($this->proxies) - 1)];
 
-        if(method_exists($this->tables, 'proxies'))
-        {
-            $this->tables->proxies()
-                ->where(['id=' => $proxy['id']])
-                ->bind(':p', 1, PDO::PARAM_INT)
-                ->update(['processes=processes+:p'])
-                ->exec();
-        }
+        $this->tables->table('proxies')
+            ->where(['id=' => $proxy['id']])
+            ->bind(':p', 1, PDO::PARAM_INT)
+            ->update(['processes=processes+:p'])
+            ->exec();
 
         return $proxy;
     }
 
-    public function agent($type = 'desktop')
+    public function agent($type = 'desktop'): string
     {
         $agents = $this->agents[$type ?: 'mobile'];
 
@@ -131,9 +126,9 @@ class Manager
                 $this->enqueue(...$e->attr());
             }
 
-            if(!empty($e->proxy['id']) && method_exists($this->tables, 'proxies'))
+            if(!empty($e->proxy['id']))
             {
-                $query = $this->tables->proxies()->where(['id=' => $e->proxy['id']])->bind(':process', 1, PDO::PARAM_INT);
+                $query = $this->tables->table('proxies')->where(['id=' => $e->proxy['id']])->bind(':process', 1, PDO::PARAM_INT);
                 $update = ['processes=processes-:process', 'last_request' => date('Y-m-d H:i:s')];
 
                 switch(true)

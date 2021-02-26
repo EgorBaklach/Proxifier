@@ -5,8 +5,8 @@
   "license": "MIT",
   "require": {
     "php": "^7.3",
-    "egorbaklach/molecule": "*",
-    "egorbaklach/contracts": "*",
+    "egorbaklach/molecule": "1.1",
+    "egorbaklach/contracts": "1.1",
     "ext-curl": "*",
     "ext-json": "*",
     "ext-pdo": "*"
