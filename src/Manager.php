@@ -44,7 +44,7 @@ class Manager
 
             $this->data[$handler::table] = $this->cache->remember($hash, 86400, function () use ($handler)
             {
-                return call_user_func(new $handler($this->tables->{$handler::table}));
+                return call_user_func(new $handler(call_user_func([$this->tables, $handler::table])));
             });
         }
     }
