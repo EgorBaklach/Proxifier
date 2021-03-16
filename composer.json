@@ -6,7 +6,7 @@
   "require": {
     "php": "^7.3",
     "egorbaklach/molecule": "1.1",
-    "egorbaklach/contracts": "1.1",
+    "egorbaklach/contracts": "1.2",
     "ext-curl": "*",
     "ext-json": "*",
     "ext-pdo": "*"
