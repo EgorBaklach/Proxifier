@@ -1,0 +1,24 @@
+{
+  "name": "egorbaklach/proxifier",
+  "type": "library",
+  "description": "Proxifier",
+  "license": "MIT",
+  "require": {
+    "php": "^7.3",
+    "egorbaklach/molecule": "2.0",
+    "egorbaklach/contracts": "1.3",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Proxifier\\": "src"
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "minimum-stability": "stable"
+}
