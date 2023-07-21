@@ -31,7 +31,7 @@ abstract class ExceptionAbstract extends LogicException
 
     public function __get($name)
     {
-        if(!array_key_exists($name, $this->attr)) throw new parent('Attribute '.$name.' From ProxifierException ProxifierException is not available'); return $this->attr[$name] ?: null;
+        return $this->attr[$name] ?: null;
     }
 
     public function __isset($name): bool

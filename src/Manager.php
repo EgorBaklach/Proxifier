@@ -30,7 +30,7 @@ class Manager
 
     public function __construct(HandlerFactoryInterface $factory)
     {
-        $this->queue = new SplQueue(); $this->factory = $factory->manager(self::handlers);
+        $this->queue = new SplQueue; $this->factory = $factory->manager(self::handlers);
     }
 
     public function handler(string $name, string $handle): self
@@ -82,7 +82,7 @@ class Manager
 
     public function __clone()
     {
-        $this->queue = clone $this->queue;
+        $this->queue = new SplQueue;
     }
 
     public function init(SourceInterface $source, callable $controller)

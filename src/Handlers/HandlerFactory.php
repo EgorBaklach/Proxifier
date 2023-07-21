@@ -15,7 +15,7 @@ class HandlerFactory implements HandlerFactoryInterface
     /** @var string */
     private $hash;
 
-    /** @var array */
+    /** @var HandlerInterface[] */
     private $factories;
 
     public function __construct(ORMFactory $factory, RememberInterface $cache)
@@ -28,11 +28,9 @@ class HandlerFactory implements HandlerFactoryInterface
         $this->factories[$name] = new $handler($this->factory->table($name), $this->hash); return $this;
     }
 
-    public function unpack(string $name): ?array
+    public function unpack(string $name): array
     {
-        if(!array_key_exists($name, $this->factories)) return null; $handler = $this->factories[$name];
-
-        return $this->cache->remember(...$handler->conditions());
+        return $this->cache->remember(...$this->factories[$name]->conditions());
     }
 
     public function table(string $name): ORM
@@ -42,6 +40,6 @@ class HandlerFactory implements HandlerFactoryInterface
 
     public function manager(array $handlers): HandlerFactoryInterface
     {
-        foreach($handlers as $name => $value) if(!array_key_exists($name, $this->factories)) $this->factories[$name] = new $value($this->factory->table($name), $this->hash); return $this;
+        foreach($handlers as $name => $value) if(!array_key_exists($name, $this->factories)) $this->handler($name, $value); return $this;
     }
 }
