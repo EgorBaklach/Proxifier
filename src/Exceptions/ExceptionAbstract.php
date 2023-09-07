@@ -14,19 +14,19 @@ use LogicException;
 abstract class ExceptionAbstract extends LogicException
 {
     /** @var array */
-    private $attr;
+    protected $attr;
 
     /** @var mixed */
     protected $data;
 
-    public function __construct($message, $status, $data, ...$attributes)
+    public function __construct($message, $status, $data, $attributes)
     {
         parent::__construct($message, $status); [$this->attr['url'], $this->attr['queries'], $this->attr['headers'], $this->attr['proxy'], $this->attr['options']] = $attributes; $this->data = $data;
     }
 
     public function attr(): array
     {
-        return [$this->url, null, $this->headers, null, $this->data, $this->options];
+        return [$this->url, null, $this->headers, $this->proxy, $this->data, $this->options];
     }
 
     public function __get($name)

@@ -40,6 +40,6 @@ class HandlerFactory implements HandlerFactoryInterface
 
     public function manager(array $handlers): HandlerFactoryInterface
     {
-        foreach($handlers as $name => $value) if(!array_key_exists($name, $this->factories)) $this->handler($name, $value); return $this;
+        foreach($handlers as $name => $handler) if(!array_key_exists($name, $this->factories)) $this->handler($name, $handler); return $this;
     }
 }

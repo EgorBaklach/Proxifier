@@ -17,6 +17,9 @@ class Manager
     /** @var SplQueue */
     private $queue;
 
+    /** @var SourceInterface */
+    private $source;
+
     /** @var HandlerFactoryInterface */
     private $factory;
 
@@ -28,9 +31,9 @@ class Manager
 
     private const handlers = ['agents' => Agents::class, 'proxies' => Proxies::class];
 
-    public function __construct(HandlerFactoryInterface $factory)
+    public function __construct(SourceInterface $source, HandlerFactoryInterface $factory)
     {
-        $this->queue = new SplQueue; $this->factory = $factory->manager(self::handlers);
+        $this->queue = new SplQueue; $this->source = $source; $this->factory = $factory->manager(self::handlers);
     }
 
     public function handler(string $name, string $handle): self
@@ -70,9 +73,9 @@ class Manager
         $agents = $this->agents[$type ?: $this->utype]; return $agents[mt_rand(0, count($agents) - 1)]['name'];
     }
 
-    public function headers($type = null, array $cookies = []): array
+    public function headers(?string $type = null): array
     {
-        $headers = ['user-agent' => $this->agent($type)]; if(!empty($cookies)) $headers['cookie'] = urldecode(http_build_query($cookies, false, '; ')); return $headers;
+        return ['user-agent' => $this->agent($type)];
     }
 
     public function isEmpty(): bool
@@ -85,9 +88,9 @@ class Manager
         $this->queue = new SplQueue;
     }
 
-    public function init(SourceInterface $source, callable $controller)
+    public function init(callable $controller): void
     {
-        if($this->queue->isEmpty()) return null; $source->start();
+        if($this->queue->isEmpty()) return; $this->source->start();
 
         while(!$this->queue->isEmpty())
         {
@@ -95,10 +98,10 @@ class Manager
 
             if(!empty($proxy)) $this->factory->table('proxies')->where(['id=' => $proxy['id']])->bind(':p', 1, PDO::PARAM_INT)->update(['processes=processes+:p'])->exec();
 
-            $source->set($url, $queries, $headers ?? $this->headers(), $proxy, $data, $options);
+            $this->source->set($url, $queries, $headers ?? $this->headers(), $proxy, $data, $options);
         }
 
-        $source->exec($controller, function(ExceptionAbstract $e)
+        $this->source->exec($controller, function(ExceptionAbstract $e)
         {
             if($e instanceof RequestInterface) $this->enqueue(...$e->attr());
 
@@ -118,6 +121,6 @@ class Manager
             }
         });
 
-        if(!$this->queue->isEmpty()) $this->init($source, $controller);
+        if(!$this->queue->isEmpty()) $this->init($controller);
     }
 }
