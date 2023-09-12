@@ -27,6 +27,11 @@ abstract class ExceptionAbstract extends LogicException
         return [$this->url, $this->queries, $this->headers, $this->proxy, $this->data, $this->options];
     }
 
+    public function __set($name, $value): void
+    {
+        $this->attr[$name] = $value;
+    }
+
     public function __get($name)
     {
         return $this->attr[$name] ?: null;
