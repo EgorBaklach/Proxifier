@@ -6,8 +6,8 @@ class RequestException extends ExceptionAbstract implements RequestInterface
 {
     use HeaderAndProxy;
 
-    public function __construct($data, $attributes)
+    public function __construct(...$attributes)
     {
-        parent::__construct('Try again', static::code, $data, $attributes);
+        parent::__construct('Try again', static::code, ...$attributes);
     }
 }

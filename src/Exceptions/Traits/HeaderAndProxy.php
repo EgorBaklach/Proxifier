@@ -12,6 +12,6 @@ Trait HeaderAndProxy
 
     public function attr(): array
     {
-        return [$this->url, null, $this->additions['headers'] ?? $this->headers ?? false, $this->additions['proxy'] ?? $this->proxy ?? false, $this->data, $this->options];
+        return [$this->url, $this->queries, $this->additions['headers'] ?? $this->headers ?? false, $this->additions['proxy'] ?? $this->proxy ?? false, $this->data, $this->options];
     }
 }

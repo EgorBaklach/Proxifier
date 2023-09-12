@@ -2,8 +2,8 @@
 
 class SuccessException extends ExceptionAbstract implements SuccessInterface
 {
-    public function __construct($data, $attributes)
+    public function __construct(...$attributes)
     {
-        parent::__construct('Ok', static::code, $data, $attributes);
+        parent::__construct('Ok', static::code, ...$attributes);
     }
 }

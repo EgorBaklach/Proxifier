@@ -9,6 +9,7 @@ use LogicException;
  * @property array|null $queries
  * @property array|null $headers
  * @property array|null $proxy
+ * @property array|null $data
  * @property array|null $options
  */
 abstract class ExceptionAbstract extends LogicException
@@ -16,17 +17,14 @@ abstract class ExceptionAbstract extends LogicException
     /** @var array */
     protected $attr;
 
-    /** @var mixed */
-    protected $data;
-
-    public function __construct($message, $status, $data, $attributes)
+    public function __construct($message, $status, ...$attributes)
     {
-        parent::__construct($message, $status); [$this->attr['url'], $this->attr['queries'], $this->attr['headers'], $this->attr['proxy'], $this->attr['options']] = $attributes; $this->data = $data;
+        [$this->attr['url'], $this->attr['queries'], $this->attr['headers'], $this->attr['proxy'], $this->attr['data'], $this->attr['options']] = $attributes; parent::__construct($message, $status);
     }
 
     public function attr(): array
     {
-        return [$this->url, null, $this->headers, $this->proxy, $this->data, $this->options];
+        return [$this->url, $this->queries, $this->headers, $this->proxy, $this->data, $this->options];
     }
 
     public function __get($name)
