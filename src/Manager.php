@@ -78,6 +78,11 @@ class Manager
         return ['user-agent' => $this->agent($type)];
     }
 
+    public function count(): int
+    {
+        return $this->queue->count();
+    }
+
     public function isEmpty(): bool
     {
         return $this->queue->isEmpty();
