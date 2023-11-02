@@ -78,6 +78,11 @@ class Manager
         return ['user-agent' => $this->agent($type)];
     }
 
+    public function source(): SourceInterface
+    {
+        return $this->source;
+    }
+
     public function count(): int
     {
         return $this->queue->count();
@@ -101,7 +106,7 @@ class Manager
         {
             [$url, $queries, $headers, $proxy, $data, $options] = $this->queue->dequeue(); if($proxy === null) $proxy = $this->proxy();
 
-            if(!empty($proxy)) $this->factory->table('proxies')->where(['id=' => $proxy['id']])->bind(':p', 1, PDO::PARAM_INT)->update(['processes=processes+:p'])->exec();
+            if(array_key_exists('id', $proxy)) $this->factory->table('proxies')->where(['id=' => $proxy['id']])->bind(':p', 1, PDO::PARAM_INT)->update(['processes=processes+:p'])->exec();
 
             $this->source->set($url, $queries, $headers ?? $this->headers(), $proxy, $data, $options);
         }
@@ -110,7 +115,7 @@ class Manager
         {
             if($e instanceof RequestInterface) $this->enqueue(...$e->attr());
 
-            if(!empty($e->proxy['id']))
+            if(array_key_exists('id', $e->proxy))
             {
                 $query = $this->factory->table('proxies')->where(['id=' => $e->proxy['id']])->bind(':process', 1, PDO::PARAM_INT);
                 $update = ['processes=processes-:process', 'last_request' => date('Y-m-d H:i:s')];
